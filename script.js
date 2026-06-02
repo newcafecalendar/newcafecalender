@@ -6,13 +6,39 @@ async function loadData() {
         const response = await fetch(CSV_URL);
         const csv = await response.text();
 
+        const rows = csv.split("\n").slice(1);
+
+        let html = "";
+
+        rows.forEach(row => {
+            if (!row.trim()) return;
+
+            const cols = row.split(",");
+
+            const releaseDate = cols[1] || "";
+            const brand = cols[2] || "";
+            const category = cols[3] || "";
+            const name = cols[4] || "";
+
+            html += `
+                <div style="
+                    background:white;
+                    margin-bottom:10px;
+                    padding:12px;
+                    border-radius:12px;
+                ">
+                    <strong>${name}</strong><br>
+                    ${brand}<br>
+                    ${category}<br>
+                    発売日：${releaseDate}
+                </div>
+            `;
+        });
+
+        document.getElementById("upcoming-list").innerHTML = html;
+
         document.getElementById("calendar").innerHTML =
-            "スプレッドシート接続成功";
-
-        document.getElementById("upcoming-list").innerHTML =
-            "データ取得成功";
-
-        console.log(csv);
+            "カレンダー実装準備中";
 
     } catch (error) {
 
