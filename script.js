@@ -122,8 +122,126 @@ async function loadData() {
         document.getElementById("upcoming-list").innerHTML =
             html;
 
-        document.getElementById("calendar").innerHTML =
-            "カレンダー実装準備中";
+const today = new Date();
+
+const year = today.getFullYear();
+const month = today.getMonth();
+
+function generateCalendar(monthOffset = 0) {
+
+    const targetDate =
+        new Date(year, month + monthOffset, 1);
+
+    const targetYear =
+        targetDate.getFullYear();
+
+    const targetMonth =
+        targetDate.getMonth();
+
+    const firstDay =
+        new Date(targetYear, targetMonth, 1);
+
+    const lastDay =
+        new Date(targetYear, targetMonth + 1, 0);
+
+    let calendarHTML = `
+        <h3 style="margin-bottom:16px;">
+            ${targetMonth + 1}月
+        </h3>
+
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(7,1fr);
+            gap:8px;
+        ">
+    `;
+
+    for (let i = 0; i < firstDay.getDay(); i++) {
+        calendarHTML += `<div></div>`;
+    }
+
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+
+        const currentDate =
+            `${targetYear}/${
+                String(targetMonth + 1).padStart(2, "0")
+            }/${
+                String(day).padStart(2, "0")
+            }`;
+
+        let eventHTML = "";
+
+        rows.forEach(row => {
+
+            if (!row.trim()) return;
+
+            const cols = row.split(",");
+
+            const releaseDate =
+                cols[1]?.trim();
+
+            const brand =
+                cols[2]?.trim();
+
+            const category =
+                cols[3]?.trim();
+
+            const name =
+                cols[4]?.trim();
+
+            if (releaseDate === currentDate) {
+
+                const brandData =
+                    brandConfig[brand];
+
+                eventHTML += `
+                    <div style="
+                        margin-top:6px;
+                        font-size:11px;
+                        background:
+                            ${brandData?.color || "#ddd"};
+                        color:white;
+                        border-radius:8px;
+                        padding:4px;
+                    ">
+                        ${
+                            getCategoryIcon(category)
+                        }
+                        ${name}
+                    </div>
+                `;
+            }
+        });
+
+        calendarHTML += `
+            <div style="
+                background:white;
+                min-height:90px;
+                border-radius:12px;
+                padding:8px;
+                box-shadow:
+                    0 1px 4px rgba(0,0,0,0.08);
+            ">
+                <div style="
+                    font-weight:bold;
+                    margin-bottom:6px;
+                ">
+                    ${day}
+                </div>
+
+                ${eventHTML}
+            </div>
+        `;
+    }
+
+    calendarHTML += `</div>`;
+
+    return calendarHTML;
+}
+
+document.getElementById("calendar").innerHTML =
+    generateCalendar(0) +
+    generateCalendar(1);
 
     } catch (error) {
 
