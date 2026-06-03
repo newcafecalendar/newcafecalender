@@ -7,8 +7,8 @@ const brandConfig = {
         icon: "🟢"
     },
     "TULLY'S": {
-        color: "#C87B00",
-        icon: "🟠"
+        color: "#B8742A",
+        icon: "🟤"
     },
     "コメダ": {
         color: "#7B3FB3",
@@ -21,7 +21,7 @@ const brandConfig = {
 };
 
 const weekdays =
-["日", "月", "火", "水", "木", "金", "土"];
+["日","月","火","水","木","金","土"];
 
 function getCategoryIcon(category) {
     if (category === "drink") return "🥤";
@@ -33,6 +33,11 @@ function getCategoryText(category) {
     if (category === "drink") return "ドリンク";
     if (category === "food") return "フード";
     return category;
+}
+
+function shortenText(text, max = 5) {
+    if (text.length <= max) return text;
+    return text.slice(0, max) + "…";
 }
 
 function getRemainingDays(releaseDate) {
@@ -54,11 +59,6 @@ function getRemainingDays(releaseDate) {
     if (diff > 1) return `あと${diff}日`;
 
     return "発売中";
-}
-
-function shortenText(text, max = 8) {
-    if (text.length <= max) return text;
-    return text.slice(0, max) + "…";
 }
 
 function generateCalendar(rows) {
@@ -91,7 +91,7 @@ function generateCalendar(rows) {
 
             <h3 style="
                 font-size:28px;
-                margin-bottom:18px;
+                margin-bottom:16px;
             ">
                 ${targetMonth + 1}月
             </h3>
@@ -100,11 +100,12 @@ function generateCalendar(rows) {
                 display:grid;
                 grid-template-columns:
                 repeat(7,1fr);
-                gap:8px;
-                margin-bottom:10px;
-                font-weight:bold;
+                gap:6px;
                 text-align:center;
                 color:#666;
+                font-size:13px;
+                margin-bottom:8px;
+                font-weight:bold;
             ">
                 ${weekdays.map(day =>
                     `<div>${day}</div>`
@@ -115,7 +116,7 @@ function generateCalendar(rows) {
                 display:grid;
                 grid-template-columns:
                 repeat(7,1fr);
-                gap:8px;
+                gap:6px;
             ">
         `;
 
@@ -158,24 +159,40 @@ function generateCalendar(rows) {
 
                     const brandData =
                         brandConfig[brand] || {
-                            color:"#999"
+                            color:"#999",
+                            icon:"☕"
                         };
 
                     eventHTML += `
                         <div style="
-                            background:
-                            ${brandData.color};
-                            color:white;
-                            border-radius:8px;
-                            padding:4px;
-                            margin-top:5px;
-                            font-size:10px;
-                            overflow:hidden;
-                            text-overflow:ellipsis;
-                            white-space:nowrap;
+                            margin-top:6px;
+                            font-size:11px;
                         ">
-                            ${getCategoryIcon(category)}
-                            ${shortenText(name)}
+                            <div style="
+                                display:flex;
+                                gap:4px;
+                                justify-content:center;
+                                margin-bottom:2px;
+                            ">
+                                <span>
+                                    ${brandData.icon}
+                                </span>
+
+                                <span>
+                                    ${getCategoryIcon(category)}
+                                </span>
+                            </div>
+
+                            <div style="
+                                text-align:center;
+                                font-size:10px;
+                                font-weight:bold;
+                                overflow:hidden;
+                                white-space:nowrap;
+                                text-overflow:ellipsis;
+                            ">
+                                ${shortenText(name)}
+                            </div>
                         </div>
                     `;
                 }
@@ -184,16 +201,17 @@ function generateCalendar(rows) {
             calendarHTML += `
                 <div style="
                     background:white;
-                    min-height:110px;
+                    min-height:95px;
                     border-radius:16px;
-                    padding:8px;
+                    padding:8px 4px;
                     box-shadow:
                     0 2px 8px
                     rgba(0,0,0,0.05);
                 ">
                     <div style="
                         font-weight:bold;
-                        margin-bottom:6px;
+                        margin-bottom:4px;
+                        text-align:center;
                     ">
                         ${day}
                     </div>
@@ -227,7 +245,13 @@ async function loadData() {
         const rows =
             csv.split("\n").slice(1);
 
-        let upcomingHTML = "";
+        let upcomingHTML = `
+            <h2 style="
+                margin-bottom:16px;
+            ">
+                発売予定
+            </h2>
+        `;
 
         rows.forEach(row => {
 
