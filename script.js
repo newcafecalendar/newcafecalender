@@ -27,6 +27,9 @@ const brandConfig = {
 const weekdays =
 ["日","月","火","水","木","金","土"];
 
+let allData = [];
+let currentFilter = "all";
+
 function getCategoryIcon(category) {
     if (category === "drink") return "🥤";
     if (category === "food") return "🍰";
@@ -59,7 +62,18 @@ function getRemainingDays(releaseDate) {
     return "発売中";
 }
 
-function generateCalendar(rows) {
+function filterData() {
+
+    if (currentFilter === "all") {
+        return allData;
+    }
+
+    return allData.filter(item =>
+        item.brand === currentFilter
+    );
+}
+
+function generateCalendar(data) {
 
     const today = new Date();
     const year = today.getFullYear();
@@ -136,32 +150,15 @@ function generateCalendar(rows) {
             let eventHTML = "";
             let cellBackground = "#FFFFFF";
 
-            rows.forEach(row => {
+            data.forEach(item => {
 
-                if (!row.trim()) return;
-
-                const cols = row.split(",");
-
-                const releaseDate =
-                    cols[1]?.trim();
-
-                const brand =
-                    cols[2]?.trim();
-
-                const category =
-                    cols[3]?.trim();
-
-                const name =
-                    cols[4]?.trim();
-
-                if (releaseDate === currentDate) {
+                if (
+                    item.releaseDate
+                    === currentDate
+                ) {
 
                     const brandData =
-                        brandConfig[brand] || {
-                            color:"#999",
-                            lightColor:"#F5F5F5",
-                            icon:"☕"
-                        };
+                        brandConfig[item.brand];
 
                     cellBackground =
                         brandData.lightColor;
@@ -171,7 +168,6 @@ function generateCalendar(rows) {
                             margin-top:6px;
                             text-align:center;
                         ">
-
                             <div style="
                                 display:flex;
                                 justify-content:center;
@@ -184,19 +180,15 @@ function generateCalendar(rows) {
                                 </span>
 
                                 <span>
-                                    ${getCategoryIcon(category)}
+                                    ${getCategoryIcon(item.category)}
                                 </span>
                             </div>
 
                             <div style="
                                 font-size:11px;
                                 font-weight:bold;
-                                color:#333;
-                                overflow:hidden;
-                                white-space:nowrap;
-                                text-overflow:ellipsis;
                             ">
-                                ${shortenText(name)}
+                                ${shortenText(item.name)}
                             </div>
                         </div>
                     `;
@@ -215,10 +207,9 @@ function generateCalendar(rows) {
                     rgba(0,0,0,0.06);
                 ">
                     <div style="
-                        font-weight:bold;
                         text-align:center;
                         font-size:16px;
-                        margin-bottom:4px;
+                        font-weight:bold;
                     ">
                         ${day}
                     </div>
@@ -239,131 +230,168 @@ function generateCalendar(rows) {
     return fullCalendar;
 }
 
+function generateUpcoming(data) {
+
+    let html =
+        `<h2 style="margin-bottom:16px;">
+        発売予定
+        </h2>`;
+
+    data.forEach(item => {
+
+        const brandData =
+            brandConfig[item.brand];
+
+        html += `
+            <div style="
+                background:white;
+                border-radius:20px;
+                padding:18px;
+                border-left:
+                6px solid
+                ${brandData.color};
+                margin-bottom:14px;
+                box-shadow:
+                0 2px 8px
+                rgba(0,0,0,0.06);
+            ">
+                <div style="
+                    color:
+                    ${brandData.color};
+                    font-weight:bold;
+                    margin-bottom:8px;
+                ">
+                    ${brandData.icon}
+                    ${item.brand}
+                </div>
+
+                <div style="
+                    font-size:22px;
+                    font-weight:bold;
+                ">
+                    ${item.name}
+                </div>
+
+                <div style="
+                    color:#666;
+                    margin-top:8px;
+                ">
+                    ${getCategoryIcon(item.category)}
+                    ${item.category === "drink"
+                        ? "ドリンク"
+                        : "フード"}
+                </div>
+
+                <div style="
+                    margin-top:8px;
+                ">
+                    発売日：
+                    ${item.releaseDate}
+                </div>
+
+                <div style="
+                    color:
+                    ${brandData.color};
+                    font-weight:bold;
+                    margin-top:8px;
+                ">
+                    ${getRemainingDays(
+                        item.releaseDate
+                    )}
+                </div>
+            </div>
+        `;
+    });
+
+    return html;
+}
+
+function renderPage() {
+
+    const filteredData =
+        filterData();
+
+    document.getElementById(
+        "calendar"
+    ).innerHTML =
+        generateCalendar(
+            filteredData
+        );
+
+    document.getElementById(
+        "upcoming-list"
+    ).innerHTML =
+        generateUpcoming(
+            filteredData
+        );
+}
+
 async function loadData() {
 
-    try {
+    const response =
+        await fetch(CSV_URL);
 
-        const response =
-            await fetch(CSV_URL);
+    const csv =
+        await response.text();
 
-        const csv =
-            await response.text();
+    const rows =
+        csv.split("\n").slice(1);
 
-        const rows =
-            csv.split("\n").slice(1);
-
-        let upcomingHTML = `
-            <h2 style="
-                margin-bottom:16px;
-            ">
-                発売予定
-            </h2>
-        `;
-
-        rows.forEach(row => {
-
-            if (!row.trim()) return;
+    allData = rows
+        .filter(row => row.trim())
+        .map(row => {
 
             const cols =
                 row.split(",");
 
-            const releaseDate =
-                cols[1]?.trim() || "";
-
-            const brand =
-                cols[2]?.trim() || "";
-
-            const category =
-                cols[3]?.trim() || "";
-
-            const name =
-                cols[4]?.trim() || "";
-
-            const brandData =
-                brandConfig[brand] || {
-                    color:"#999",
-                    icon:"☕"
-                };
-
-            upcomingHTML += `
-                <div style="
-                    background:white;
-                    border-radius:20px;
-                    padding:18px;
-                    border-left:
-                    6px solid
-                    ${brandData.color};
-                    margin-bottom:14px;
-                    box-shadow:
-                    0 2px 8px
-                    rgba(0,0,0,0.06);
-                ">
-                    <div style="
-                        color:
-                        ${brandData.color};
-                        font-weight:bold;
-                        margin-bottom:8px;
-                    ">
-                        ${brandData.icon}
-                        ${brand}
-                    </div>
-
-                    <div style="
-                        font-size:22px;
-                        font-weight:bold;
-                        margin-bottom:8px;
-                    ">
-                        ${name}
-                    </div>
-
-                    <div style="
-                        color:#666;
-                        margin-bottom:6px;
-                    ">
-                        ${getCategoryIcon(category)}
-                        ${category === "drink"
-                            ? "ドリンク"
-                            : "フード"}
-                    </div>
-
-                    <div style="
-                        color:#666;
-                        margin-bottom:8px;
-                    ">
-                        発売日：
-                        ${releaseDate}
-                    </div>
-
-                    <div style="
-                        color:
-                        ${brandData.color};
-                        font-weight:bold;
-                    ">
-                        ${getRemainingDays(releaseDate)}
-                    </div>
-                </div>
-            `;
+            return {
+                releaseDate:
+                    cols[1]?.trim(),
+                brand:
+                    cols[2]?.trim(),
+                category:
+                    cols[3]?.trim(),
+                name:
+                    cols[4]?.trim()
+            };
         });
 
-        document.getElementById(
-            "calendar"
-        ).innerHTML =
-            generateCalendar(rows);
+    renderPage();
 
-        document.getElementById(
-            "upcoming-list"
-        ).innerHTML =
-            upcomingHTML;
+    document
+        .querySelectorAll(
+            ".filter-btn"
+        )
+        .forEach(button => {
 
-    } catch (error) {
+            button
+            .addEventListener(
+                "click",
+                () => {
 
-        document.getElementById(
-            "calendar"
-        ).innerHTML =
-            "データ取得失敗";
+                document
+                .querySelectorAll(
+                    ".filter-btn"
+                )
+                .forEach(btn =>
+                    btn.classList
+                    .remove(
+                        "active"
+                    )
+                );
 
-        console.error(error);
-    }
+                button
+                .classList
+                .add(
+                    "active"
+                );
+
+                currentFilter =
+                    button.dataset.brand;
+
+                renderPage();
+            });
+        });
 }
 
 loadData();
