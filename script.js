@@ -188,8 +188,7 @@ function generateCalendar(data) {
 
                     eventHTML += `
                         <a
-                            href="${item.url}"
-                            target="_blank"
+                            href="detail.html?id=${item.id}"
                             style="
                                 text-decoration:none;
                                 color:inherit;
@@ -278,8 +277,7 @@ function generateUpcoming(data) {
 
         html += `
             <a
-                href="${item.url}"
-                target="_blank"
+                href="detail.html?id=${item.id}"
                 style="
                     text-decoration:none;
                     color:inherit;
@@ -382,12 +380,13 @@ async function loadData() {
 
     allData = rows
         .filter(row => row.trim())
-        .map(row => {
+        .map((row, index) => {
 
             const cols =
                 row.split(",");
 
             return {
+                id: String(index),
                 releaseDate:
                     cols[1]?.trim(),
                 brand:
