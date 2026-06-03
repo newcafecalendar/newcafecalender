@@ -4,18 +4,22 @@ const CSV_URL =
 const brandConfig = {
     "Starbucks": {
         color: "#00704A",
+        lightColor: "#E8F5F0",
         icon: "🟢"
     },
     "TULLY'S": {
-        color: "#B8742A",
+        color: "#8B5A2B",
+        lightColor: "#F5EEE6",
         icon: "🟤"
     },
     "コメダ": {
         color: "#7B3FB3",
+        lightColor: "#F2EAFB",
         icon: "🟣"
     },
     "Gong cha": {
         color: "#D40000",
+        lightColor: "#FCEAEA",
         icon: "🔴"
     }
 };
@@ -27,12 +31,6 @@ function getCategoryIcon(category) {
     if (category === "drink") return "🥤";
     if (category === "food") return "🍰";
     return "☕";
-}
-
-function getCategoryText(category) {
-    if (category === "drink") return "ドリンク";
-    if (category === "food") return "フード";
-    return category;
 }
 
 function shortenText(text, max = 5) {
@@ -90,8 +88,8 @@ function generateCalendar(rows) {
             <div style="margin-bottom:40px;">
 
             <h3 style="
-                font-size:28px;
-                margin-bottom:16px;
+                font-size:32px;
+                margin-bottom:18px;
             ">
                 ${targetMonth + 1}月
             </h3>
@@ -100,11 +98,11 @@ function generateCalendar(rows) {
                 display:grid;
                 grid-template-columns:
                 repeat(7,1fr);
-                gap:6px;
+                gap:8px;
                 text-align:center;
                 color:#666;
-                font-size:13px;
-                margin-bottom:8px;
+                font-size:14px;
+                margin-bottom:10px;
                 font-weight:bold;
             ">
                 ${weekdays.map(day =>
@@ -116,7 +114,7 @@ function generateCalendar(rows) {
                 display:grid;
                 grid-template-columns:
                 repeat(7,1fr);
-                gap:6px;
+                gap:8px;
             ">
         `;
 
@@ -136,6 +134,7 @@ function generateCalendar(rows) {
                 }`;
 
             let eventHTML = "";
+            let cellBackground = "#FFFFFF";
 
             rows.forEach(row => {
 
@@ -160,19 +159,25 @@ function generateCalendar(rows) {
                     const brandData =
                         brandConfig[brand] || {
                             color:"#999",
+                            lightColor:"#F5F5F5",
                             icon:"☕"
                         };
+
+                    cellBackground =
+                        brandData.lightColor;
 
                     eventHTML += `
                         <div style="
                             margin-top:6px;
-                            font-size:11px;
+                            text-align:center;
                         ">
+
                             <div style="
                                 display:flex;
-                                gap:4px;
                                 justify-content:center;
-                                margin-bottom:2px;
+                                gap:6px;
+                                font-size:18px;
+                                margin-bottom:4px;
                             ">
                                 <span>
                                     ${brandData.icon}
@@ -184,9 +189,9 @@ function generateCalendar(rows) {
                             </div>
 
                             <div style="
-                                text-align:center;
-                                font-size:10px;
+                                font-size:11px;
                                 font-weight:bold;
+                                color:#333;
                                 overflow:hidden;
                                 white-space:nowrap;
                                 text-overflow:ellipsis;
@@ -200,18 +205,20 @@ function generateCalendar(rows) {
 
             calendarHTML += `
                 <div style="
-                    background:white;
-                    min-height:95px;
-                    border-radius:16px;
-                    padding:8px 4px;
+                    background:
+                    ${cellBackground};
+                    min-height:100px;
+                    border-radius:18px;
+                    padding:8px;
                     box-shadow:
                     0 2px 8px
-                    rgba(0,0,0,0.05);
+                    rgba(0,0,0,0.06);
                 ">
                     <div style="
                         font-weight:bold;
-                        margin-bottom:4px;
                         text-align:center;
+                        font-size:16px;
+                        margin-bottom:4px;
                     ">
                         ${day}
                     </div>
@@ -281,7 +288,7 @@ async function loadData() {
             upcomingHTML += `
                 <div style="
                     background:white;
-                    border-radius:18px;
+                    border-radius:20px;
                     padding:18px;
                     border-left:
                     6px solid
@@ -304,7 +311,7 @@ async function loadData() {
                     <div style="
                         font-size:22px;
                         font-weight:bold;
-                        margin-bottom:10px;
+                        margin-bottom:8px;
                     ">
                         ${name}
                     </div>
@@ -314,7 +321,9 @@ async function loadData() {
                         margin-bottom:6px;
                     ">
                         ${getCategoryIcon(category)}
-                        ${getCategoryText(category)}
+                        ${category === "drink"
+                            ? "ドリンク"
+                            : "フード"}
                     </div>
 
                     <div style="
