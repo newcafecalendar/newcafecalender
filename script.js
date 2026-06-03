@@ -41,7 +41,7 @@ function shortenText(text, max = 5) {
     return text.slice(0, max) + "…";
 }
 
-function getRemainingDays(releaseDate) {
+function getDaysDiff(releaseDate) {
 
     const today = new Date();
     const release = new Date(releaseDate);
@@ -49,17 +49,30 @@ function getRemainingDays(releaseDate) {
     today.setHours(0,0,0,0);
     release.setHours(0,0,0,0);
 
+    return Math.ceil(
+        (release - today)
+        / (1000 * 60 * 60 * 24)
+    );
+}
+
+function getReleaseLabel(releaseDate) {
+
     const diff =
-        Math.ceil(
-            (release - today)
-            / (1000 * 60 * 60 * 24)
-        );
+        getDaysDiff(releaseDate);
 
-    if (diff === 0) return "本日発売";
-    if (diff === 1) return "明日発売";
-    if (diff > 1) return `あと${diff}日`;
+    if (diff === 0) {
+        return "🔥 本日発売";
+    }
 
-    return "発売中";
+    if (diff === 1) {
+        return "⏰ 明日発売";
+    }
+
+    if (diff > 1) {
+        return `📅 あと${diff}日`;
+    }
+
+    return "☕ 発売中";
 }
 
 function filterData() {
@@ -147,6 +160,16 @@ function generateCalendar(data) {
                     .padStart(2, "0")
                 }`;
 
+            const isToday =
+                currentDate ===
+                `${today.getFullYear()}/${
+                    String(today.getMonth() + 1)
+                    .padStart(2, "0")
+                }/${
+                    String(today.getDate())
+                    .padStart(2, "0")
+                }`;
+
             let eventHTML = "";
             let cellBackground = "#FFFFFF";
 
@@ -205,6 +228,10 @@ function generateCalendar(data) {
                     box-shadow:
                     0 2px 8px
                     rgba(0,0,0,0.06);
+                    border:
+                    ${isToday
+                        ? "2px solid #006241"
+                        : "none"};
                 ">
                     <div style="
                         text-align:center;
@@ -295,7 +322,7 @@ function generateUpcoming(data) {
                     font-weight:bold;
                     margin-top:8px;
                 ">
-                    ${getRemainingDays(
+                    ${getReleaseLabel(
                         item.releaseDate
                     )}
                 </div>
@@ -356,7 +383,6 @@ async function loadData() {
             };
         });
 
-    // 発売日順ソート
     allData.sort((a, b) => {
         return new Date(a.releaseDate)
             - new Date(b.releaseDate);
