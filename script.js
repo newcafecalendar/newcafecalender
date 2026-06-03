@@ -20,13 +20,23 @@ const brandConfig = {
     }
 };
 
+const weekdays =
+["日", "月", "火", "水", "木", "金", "土"];
+
 function getCategoryIcon(category) {
     if (category === "drink") return "🥤";
     if (category === "food") return "🍰";
     return "☕";
 }
 
+function getCategoryText(category) {
+    if (category === "drink") return "ドリンク";
+    if (category === "food") return "フード";
+    return category;
+}
+
 function getRemainingDays(releaseDate) {
+
     const today = new Date();
     const release = new Date(releaseDate);
 
@@ -34,13 +44,21 @@ function getRemainingDays(releaseDate) {
     release.setHours(0,0,0,0);
 
     const diff =
-        Math.ceil((release - today) / (1000 * 60 * 60 * 24));
+        Math.ceil(
+            (release - today)
+            / (1000 * 60 * 60 * 24)
+        );
 
     if (diff === 0) return "本日発売";
     if (diff === 1) return "明日発売";
     if (diff > 1) return `あと${diff}日`;
 
     return "発売中";
+}
+
+function shortenText(text, max = 8) {
+    if (text.length <= max) return text;
+    return text.slice(0, max) + "…";
 }
 
 function generateCalendar(rows) {
@@ -69,13 +87,34 @@ function generateCalendar(rows) {
             new Date(targetYear, targetMonth + 1, 0);
 
         let calendarHTML = `
-            <h3 style="margin:20px 0 12px;">
+            <div style="margin-bottom:40px;">
+
+            <h3 style="
+                font-size:28px;
+                margin-bottom:18px;
+            ">
                 ${targetMonth + 1}月
             </h3>
 
             <div style="
                 display:grid;
-                grid-template-columns:repeat(7,1fr);
+                grid-template-columns:
+                repeat(7,1fr);
+                gap:8px;
+                margin-bottom:10px;
+                font-weight:bold;
+                text-align:center;
+                color:#666;
+            ">
+                ${weekdays.map(day =>
+                    `<div>${day}</div>`
+                ).join("")}
+            </div>
+
+            <div style="
+                display:grid;
+                grid-template-columns:
+                repeat(7,1fr);
                 gap:8px;
             ">
         `;
@@ -124,16 +163,19 @@ function generateCalendar(rows) {
 
                     eventHTML += `
                         <div style="
-                            margin-top:6px;
-                            font-size:11px;
                             background:
-                                ${brandData.color};
+                            ${brandData.color};
                             color:white;
                             border-radius:8px;
                             padding:4px;
+                            margin-top:5px;
+                            font-size:10px;
+                            overflow:hidden;
+                            text-overflow:ellipsis;
+                            white-space:nowrap;
                         ">
                             ${getCategoryIcon(category)}
-                            ${name}
+                            ${shortenText(name)}
                         </div>
                     `;
                 }
@@ -142,11 +184,12 @@ function generateCalendar(rows) {
             calendarHTML += `
                 <div style="
                     background:white;
-                    min-height:90px;
-                    border-radius:12px;
+                    min-height:110px;
+                    border-radius:16px;
                     padding:8px;
                     box-shadow:
-                    0 1px 4px rgba(0,0,0,0.08);
+                    0 2px 8px
+                    rgba(0,0,0,0.05);
                 ">
                     <div style="
                         font-weight:bold;
@@ -160,7 +203,10 @@ function generateCalendar(rows) {
             `;
         }
 
-        calendarHTML += `</div>`;
+        calendarHTML += `
+            </div>
+            </div>
+        `;
 
         fullCalendar += calendarHTML;
     }
@@ -181,7 +227,7 @@ async function loadData() {
         const rows =
             csv.split("\n").slice(1);
 
-        let html = "";
+        let upcomingHTML = "";
 
         rows.forEach(row => {
 
@@ -208,15 +254,18 @@ async function loadData() {
                     icon:"☕"
                 };
 
-            html += `
+            upcomingHTML += `
                 <div style="
                     background:white;
-                    margin-bottom:12px;
-                    padding:16px;
-                    border-radius:16px;
+                    border-radius:18px;
+                    padding:18px;
                     border-left:
                     6px solid
                     ${brandData.color};
+                    margin-bottom:14px;
+                    box-shadow:
+                    0 2px 8px
+                    rgba(0,0,0,0.06);
                 ">
                     <div style="
                         color:
@@ -229,20 +278,25 @@ async function loadData() {
                     </div>
 
                     <div style="
-                        font-size:20px;
+                        font-size:22px;
                         font-weight:bold;
+                        margin-bottom:10px;
                     ">
                         ${name}
                     </div>
 
-                    <div>
+                    <div style="
+                        color:#666;
+                        margin-bottom:6px;
+                    ">
                         ${getCategoryIcon(category)}
-                        ${category === "drink"
-                            ? "ドリンク"
-                            : "フード"}
+                        ${getCategoryText(category)}
                     </div>
 
-                    <div>
+                    <div style="
+                        color:#666;
+                        margin-bottom:8px;
+                    ">
                         発売日：
                         ${releaseDate}
                     </div>
@@ -259,13 +313,14 @@ async function loadData() {
         });
 
         document.getElementById(
-            "upcoming-list"
-        ).innerHTML = html;
-
-        document.getElementById(
             "calendar"
         ).innerHTML =
             generateCalendar(rows);
+
+        document.getElementById(
+            "upcoming-list"
+        ).innerHTML =
+            upcomingHTML;
 
     } catch (error) {
 
