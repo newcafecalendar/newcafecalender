@@ -187,10 +187,17 @@ function generateCalendar(data) {
                         brandData.lightColor;
 
                     eventHTML += `
-                        <div style="
-                            margin-top:6px;
-                            text-align:center;
-                        ">
+                        <a
+                            href="${item.url}"
+                            target="_blank"
+                            style="
+                                text-decoration:none;
+                                color:inherit;
+                                display:block;
+                                margin-top:6px;
+                                text-align:center;
+                            "
+                        >
                             <div style="
                                 display:flex;
                                 justify-content:center;
@@ -213,7 +220,7 @@ function generateCalendar(data) {
                             ">
                                 ${shortenText(item.name)}
                             </div>
-                        </div>
+                        </a>
                     `;
                 }
             });
@@ -270,63 +277,72 @@ function generateUpcoming(data) {
             brandConfig[item.brand];
 
         html += `
-            <div style="
-                background:white;
-                border-radius:20px;
-                padding:18px;
-                border-left:
-                6px solid
-                ${brandData.color};
-                margin-bottom:14px;
-                box-shadow:
-                0 2px 8px
-                rgba(0,0,0,0.06);
-            ">
+            <a
+                href="${item.url}"
+                target="_blank"
+                style="
+                    text-decoration:none;
+                    color:inherit;
+                "
+            >
                 <div style="
-                    color:
+                    background:white;
+                    border-radius:20px;
+                    padding:18px;
+                    border-left:
+                    6px solid
                     ${brandData.color};
-                    font-weight:bold;
-                    margin-bottom:8px;
+                    margin-bottom:14px;
+                    box-shadow:
+                    0 2px 8px
+                    rgba(0,0,0,0.06);
                 ">
-                    ${brandData.icon}
-                    ${item.brand}
-                </div>
+                    <div style="
+                        color:
+                        ${brandData.color};
+                        font-weight:bold;
+                        margin-bottom:8px;
+                    ">
+                        ${brandData.icon}
+                        ${item.brand}
+                    </div>
 
-                <div style="
-                    font-size:22px;
-                    font-weight:bold;
-                ">
-                    ${item.name}
-                </div>
+                    <div style="
+                        font-size:22px;
+                        font-weight:bold;
+                    ">
+                        ${item.name}
+                    </div>
 
-                <div style="
-                    color:#666;
-                    margin-top:8px;
-                ">
-                    ${getCategoryIcon(item.category)}
-                    ${item.category === "drink"
-                        ? "ドリンク"
-                        : "フード"}
-                </div>
+                    <div style="
+                        color:#666;
+                        margin-top:8px;
+                    ">
+                        ${getCategoryIcon(item.category)}
+                        ${item.category === "drink"
+                            ? "ドリンク"
+                            : "フード"}
+                    </div>
 
-                <div style="
-                    margin-top:8px;
-                ">
-                    発売日：
-                    ${item.releaseDate}
-                </div>
+                    <div style="
+                        margin-top:8px;
+                    ">
+                        発売日：
+                        ${item.releaseDate}
+                    </div>
 
-                <div style="
-                    color:
-                    ${brandData.color};
-                    font-weight:bold;
-                    margin-top:8px;
-                ">
-                    ${getReleaseLabel(
-                        item.releaseDate
-                    )}
+                    <div style="
+                        color:
+                        ${brandData.color};
+                        font-weight:bold;
+                        margin-top:8px;
+                    ">
+                        ${getReleaseLabel(
+                            item.releaseDate
+                        )}
+                    </div>
                 </div>
-            </div>
+            </a>
         `;
     });
 
@@ -379,7 +395,11 @@ async function loadData() {
                 category:
                     cols[3]?.trim(),
                 name:
-                    cols[4]?.trim()
+                    cols[4]?.trim(),
+                description:
+                    cols[5]?.trim(),
+                url:
+                    cols[6]?.trim()
             };
         });
 
