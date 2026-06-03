@@ -2,13 +2,16 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width,
         initial-scale=1.0"
     >
 
-    <title>商品詳細</title>
+    <title>
+        新作カフェカレンダー
+    </title>
 
     <link
         rel="stylesheet"
@@ -24,19 +27,74 @@
     </h1>
 </header>
 
+<section class="filters">
+
+    <button
+        class="filter-btn active"
+        data-brand="all"
+    >
+        すべて
+    </button>
+
+    <button
+        class="filter-btn"
+        data-brand="Starbucks"
+    >
+        Starbucks
+    </button>
+
+    <button
+        class="filter-btn"
+        data-brand="TULLY'S"
+    >
+        TULLY'S
+    </button>
+
+    <button
+        class="filter-btn"
+        data-brand="コメダ"
+    >
+        コメダ
+    </button>
+
+    <button
+        class="filter-btn"
+        data-brand="Gong cha"
+    >
+        Gong cha
+    </button>
+
+</section>
+
 <main>
 
-    <div id="detail-container">
+    <section
+        class="calendar-section"
+    >
 
         <h2>
-            読み込み中...
+            発売カレンダー
         </h2>
 
-    </div>
+        <div id="calendar">
+            読み込み中...
+        </div>
+
+    </section>
+
+    <section
+        class="upcoming-section"
+    >
+
+        <div id="upcoming-list">
+            読み込み中...
+        </div>
+
+    </section>
 
 </main>
 
-<script src="detail.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
