@@ -356,6 +356,12 @@ async function loadData() {
             };
         });
 
+    // 発売日順ソート
+    allData.sort((a, b) => {
+        return new Date(a.releaseDate)
+            - new Date(b.releaseDate);
+    });
+
     renderPage();
 
     document
