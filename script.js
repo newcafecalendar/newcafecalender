@@ -31,9 +31,16 @@ let allData = [];
 let currentFilter = "all";
 
 function getCategoryIcon(category) {
-    if (category === "drink") return "🥤";
-    if (category === "food") return "🍰";
-    return "☕";
+
+    if (category === "drink") {
+        return "images/drink.png";
+    }
+
+    if (category === "food") {
+        return "images/food.png";
+    }
+
+    return "images/other.png";
 }
 
 function shortenText(text, max = 5) {
@@ -204,13 +211,28 @@ function generateCalendar(data) {
                                 font-size:18px;
                                 margin-bottom:4px;
                             ">
-                                <span>
-                                    ${brandData.icon}
-                                </span>
+                                <div
+                                    style="
+                                        width:36px;
+                                        height:36px;
+                                        border-radius:12px;
+                                        background:${brandData.color};
+                                        display:flex;
+                                        justify-content:center;
+                                        align-items:center;
+                                        margin:auto;
+                                    "
+                                >
 
-                                <span>
-                                    ${getCategoryIcon(item.category)}
-                                </span>
+                                <img
+                                    src="${getCategoryIcon(item.category)}"
+                                    style="
+                                        width:22px;
+                                        height:22px;
+                                    "
+                                >
+
+                            </div>
                             </div>
 
                             <div style="
@@ -311,16 +333,51 @@ function generateUpcoming(data) {
                     ">
                         ${item.name}
                     </div>
+                        <div
+    style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+        margin-top:8px;
+        color:#666;
+    "
+>
 
-                    <div style="
-                        color:#666;
-                        margin-top:8px;
-                    ">
-                        ${getCategoryIcon(item.category)}
-                        ${item.category === "drink"
-                            ? "ドリンク"
-                            : "フード"}
-                    </div>
+    <div
+        style="
+            width:36px;
+            height:36px;
+            border-radius:12px;
+            background:${brandData.color};
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        "
+    >
+
+        <img
+            src="${getCategoryIcon(item.category)}"
+            style="
+                width:22px;
+                height:22px;
+            "
+        >
+
+    </div>
+
+    <span>
+
+        ${
+            item.category === "drink"
+            ? "ドリンク"
+            : item.category === "food"
+            ? "フード"
+            : "その他"
+        }
+
+    </span>
+
+</div>
 
                     <div style="
                         margin-top:8px;
