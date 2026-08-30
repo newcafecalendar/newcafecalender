@@ -5,7 +5,8 @@
 
 const CONFIG = {
   pendingSheetName: '確認待ち',
-  publishedSheetName: '公開用',
+  // サイトが現在CSVとして公開している既存シート名（gid=0）です。
+  publishedSheetName: 'products',
   timezone: 'Asia/Tokyo',
   brands: [
     { name: 'Starbucks', url: 'https://www.starbucks.co.jp/press_release/pr.php' },
@@ -36,6 +37,24 @@ function setupSheets() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   ensureSheet_(spreadsheet, CONFIG.pendingSheetName, PENDING_HEADERS);
   ensureSheet_(spreadsheet, CONFIG.publishedSheetName, PUBLISHED_HEADERS);
+}
+
+/**
+ * 練習データを削除し、公開用productsと確認待ちを初期状態に戻します。
+ * productsシート自体は残すため、サイトが参照するgidは変わりません。
+ */
+function resetCalendarSheets() {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const products = spreadsheet.getSheetByName(CONFIG.publishedSheetName)
+    || spreadsheet.insertSheet(CONFIG.publishedSheetName);
+  const pending = spreadsheet.getSheetByName(CONFIG.pendingSheetName)
+    || spreadsheet.insertSheet(CONFIG.pendingSheetName);
+
+  [products, pending].forEach(sheet => sheet.clear());
+  products.getRange(1, 1, 1, PUBLISHED_HEADERS.length).setValues([PUBLISHED_HEADERS]);
+  pending.getRange(1, 1, 1, PENDING_HEADERS.length).setValues([PENDING_HEADERS]);
+  products.setFrozenRows(1);
+  pending.setFrozenRows(1);
 }
 
 /** 毎日実行するトリガーに設定する関数です。 */
