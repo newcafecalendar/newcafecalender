@@ -1,110 +1,18 @@
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-    background: #f3f3f3;
-    color: #222;
-}
-
-header {
-    background: #006241;
-    color: white;
-    text-align: center;
-    padding: 22px 16px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.filters {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 14px;
-    background: white;
-    position: sticky;
-    top: 78px;
-    z-index: 99;
-    border-bottom: 1px solid #eee;
-}
-
-.filters::-webkit-scrollbar {
-    display: none;
-}
-
-.filter-btn {
-    border: none;
-    border-radius: 999px;
-    padding: 10px 18px;
-    cursor: pointer;
-    background: #e5e5e5;
-    white-space: nowrap;
-    font-size: 14px;
-    transition: 0.2s;
-}
-
-.filter-btn.active {
-    background: #006241;
-    color: white;
-}
-
-main {
-    max-width: 480px;
-    margin: auto;
-    padding: 16px;
-}
-
-.calendar-section,
-.upcoming-section {
-    margin-bottom: 24px;
-}
-
-.calendar-section h2,
-.upcoming-section h2 {
-    margin-bottom: 14px;
-    font-size: 30px;
-}
-
-#calendar {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-#upcoming-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-footer {
-    text-align: center;
-    padding: 30px 20px;
-    color: #777;
-    font-size: 14px;
-}
-
-@media screen and (max-width: 480px) {
-
-    header h1 {
-        font-size: 24px;
-    }
-
-    .calendar-section h2,
-    .upcoming-section h2 {
-        font-size: 28px;
-    }
-}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f3f3f3; color: #222; }
+header { position: sticky; top: 0; z-index: 10; padding: 22px 16px; background: #006241; color: #fff; text-align: center; }
+header h1 { margin: 0; font-size: 28px; }
+.filters { position: sticky; top: 78px; z-index: 9; padding: 12px 14px 14px; background: #fff; border-bottom: 1px solid #eee; }
+.filter-group + .filter-group { margin-top: 10px; }
+.filter-label { margin: 0 0 6px; color: #555; font-size: 12px; font-weight: 700; }
+.filter-options { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.filter-options::-webkit-scrollbar { display: none; }
+.filter-btn { flex: 0 0 auto; border: 0; border-radius: 999px; padding: 9px 15px; background: #e5e5e5; color: #222; cursor: pointer; font-size: 14px; transition: .2s; }
+.filter-btn.active { background: #006241; color: #fff; }
+main { max-width: 480px; margin: auto; padding: 16px; }
+.calendar-section, .upcoming-section { margin-bottom: 24px; }
+.calendar-section h2, .upcoming-section h2 { margin: 0 0 14px; font-size: 30px; }
+#calendar { display: flex; flex-direction: column; gap: 24px; }
+#upcoming-list { display: flex; flex-direction: column; gap: 12px; }
+.empty-message { padding: 22px; border-radius: 16px; background: #fff; color: #666; text-align: center; }
+@media (max-width: 480px) { header h1 { font-size: 24px; } .filters { top: 72px; } .calendar-section h2, .upcoming-section h2 { font-size: 26px; } }
