@@ -1,100 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width,
-        initial-scale=1.0"
-    >
-
-    <title>
-        新作カフェカレンダー
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新作カフェカレンダー</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-<header>
-    <h1>
-        ☕ 新作カフェカレンダー
-    </h1>
-</header>
-
-<section class="filters">
-
-    <button
-        class="filter-btn active"
-        data-brand="all"
-    >
-        すべて
-    </button>
-
-    <button
-        class="filter-btn"
-        data-brand="Starbucks"
-    >
-        Starbucks
-    </button>
-
-    <button
-        class="filter-btn"
-        data-brand="TULLY'S"
-    >
-        TULLY'S
-    </button>
-
-    <button
-        class="filter-btn"
-        data-brand="コメダ"
-    >
-        コメダ
-    </button>
-
-    <button
-        class="filter-btn"
-        data-brand="Gong cha"
-    >
-        Gong cha
-    </button>
-
-</section>
-
-<main>
-
-    <section
-        class="calendar-section"
-    >
-
-        <h2>
-            発売カレンダー
-        </h2>
-
-        <div id="calendar">
-            読み込み中...
-        </div>
-
-    </section>
-
-    <section
-        class="upcoming-section"
-    >
-
-        <div id="upcoming-list">
-            読み込み中...
-        </div>
-
-    </section>
-
-</main>
-
-<script src="script.js"></script>
-
+  <header><h1>☕ 新作カフェカレンダー</h1></header>
+  <section class="filters" aria-label="商品を絞り込む">
+    <div class="filter-group">
+      <p class="filter-label">ブランド</p>
+      <div class="filter-options" role="group" aria-label="ブランド">
+        <button class="filter-btn active" type="button" data-filter-type="brand" data-filter-value="all">すべて</button>
+        <button class="filter-btn" type="button" data-filter-type="brand" data-filter-value="Starbucks">Starbucks</button>
+        <button class="filter-btn" type="button" data-filter-type="brand" data-filter-value="TULLY'S">TULLY'S</button>
+        <button class="filter-btn" type="button" data-filter-type="brand" data-filter-value="コメダ">コメダ</button>
+        <button class="filter-btn" type="button" data-filter-type="brand" data-filter-value="Gong cha">Gong cha</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <p class="filter-label">カテゴリ</p>
+      <div class="filter-options" role="group" aria-label="カテゴリ">
+        <button class="filter-btn active" type="button" data-filter-type="category" data-filter-value="all">すべて</button>
+        <button class="filter-btn" type="button" data-filter-type="category" data-filter-value="drink">ドリンク</button>
+        <button class="filter-btn" type="button" data-filter-type="category" data-filter-value="food">フード</button>
+        <button class="filter-btn" type="button" data-filter-type="category" data-filter-value="other">その他</button>
+      </div>
+    </div>
+  </section>
+  <main>
+    <section class="calendar-section"><h2>発売カレンダー</h2><div id="calendar">読み込み中…</div></section>
+    <section class="upcoming-section"><div id="upcoming-list">読み込み中…</div></section>
+  </main>
+  <script src="script.js"></script>
 </body>
 </html>
